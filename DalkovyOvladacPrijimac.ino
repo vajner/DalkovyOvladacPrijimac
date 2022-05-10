@@ -1,13 +1,14 @@
 
 
 //#define DEBUG 
-#define DEBUG_JOY
+//#define DEBUG_JOY
 
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
 #include <Servo.h>
 #include <printf.h>
+#include <EEPROM.h>
 
 //
 // =======================================================================================================
@@ -34,7 +35,7 @@ const byte rJoyBtn     = 14;
 
 
 
-String nazevZarizeni = "IS-1"; // Osetreno na max 8 znaku
+//String nazevZarizeni = "IS-1"; // Osetreno na max 8 znaku
 byte   urovenBaterie=35;
 byte   chybnychPruchodu = 0;
 const byte stredovaHodnota=90;
@@ -95,13 +96,10 @@ void setup() {
   data.rJoyBtn=0;
   data.lJoyBtn=0;
 
-  nazevZarizeni.toCharArray(dataInfo.nazevZarizeni, 9);
+  //nazevZarizeni.toCharArray(dataInfo.nazevZarizeni, 9);
 
   if(intro) {
-    Serial.println("========================================");
-    Serial.println("= Prijimac dalkoveho ovladace by VaPet =");
-    Serial.println("========================================");
-    Serial.println("Pro vypis hodnot zadejte $$");
+    zobrazIntro();
     intro=false;
   }
 }
@@ -117,9 +115,9 @@ void loop() {
   #endif
   
   if (Serial.available() > 0) {
-    prijato = Serial.readString();  
+    String prijato = Serial.readString();  
     if(prijato.length() > 0) {
-      zpracujPrichoziPrikaz();
+      zpracujPrichoziPrikaz(prijato);
     }
   }
   
@@ -130,4 +128,12 @@ void loop() {
   writeServos();
   ////checkBattery();
  
+}
+
+
+void zobrazIntro() {
+  Serial.println("========================================");
+  Serial.println("= Prijimac dalkoveho ovladace by VaPet =");
+  Serial.println("========================================");
+  Serial.println("Pro vypis hodnot zadejte $$");
 }
