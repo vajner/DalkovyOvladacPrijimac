@@ -23,7 +23,6 @@ String prijato;
 boolean intro = true;
 
 RF24 radio(7, 8); // CE, CSN
-const byte addresses[][10] = {"VaPet-A", "VaPet-B"};
 
 //Definice pinu
 const byte servoRxPin  = 3;
@@ -34,16 +33,14 @@ const byte lJoyBtn     = 15;
 const byte rJoyBtn     = 14;
 
 
-
-//String nazevZarizeni = "IS-1"; // Osetreno na max 8 znaku
 byte   urovenBaterie=35;
 byte   chybnychPruchodu = 0;
 const byte stredovaHodnota=90;
 
 struct Data_Info {
-  char nazevZarizeni[9]="";
+  char nazevZarizeni[10]="Nezname";
   byte urovenBaterie = 0;
-  byte channel = 1; // the channel number
+  byte channel = 0;
 };
 
 struct Data_Command {
@@ -95,9 +92,7 @@ void setup() {
   data.lJoyY = stredovaHodnota;
   data.rJoyBtn=0;
   data.lJoyBtn=0;
-
-  //nazevZarizeni.toCharArray(dataInfo.nazevZarizeni, 9);
-
+  
   if(intro) {
     zobrazIntro();
     intro=false;
@@ -122,6 +117,7 @@ void loop() {
   }
   
   dataInfo.urovenBaterie=15;
+  doplnNazevZarizeni();
   
   prijmiData();
   odesliData();
@@ -136,4 +132,17 @@ void zobrazIntro() {
   Serial.println("= Prijimac dalkoveho ovladace by VaPet =");
   Serial.println("========================================");
   Serial.println("Pro vypis hodnot zadejte $$");
+}
+
+void doplnNazevZarizeni() {
+  String  nazev = getNazevZarizeni();
+  int str_len = nazev.length() + 1; 
+  char char_array[10];
+  nazev.toCharArray(char_array, str_len);
+  for (int i = 0;i < nazev.length();i++) {
+    dataInfo.nazevZarizeni[i] = char_array[i];
+  }
+  for (int i = nazev.length();i < 10;i++) {
+    dataInfo.nazevZarizeni[i] = ' ';
+  }  
 }

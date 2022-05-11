@@ -20,7 +20,6 @@ void setIdPrijimace(byte idPrijimace) {
 }
 
 String getSSIDRadia() {
-  //return EEPROM.read(NAZEV_RADIA);
   String nazev = TextFromEEPROM(SIFROVACI_KLIC, 10);
   if(nazev.length() == 0) {
     nazev = "Nezadano";
@@ -29,8 +28,8 @@ String getSSIDRadia() {
   return nazev;
 }
 
-void setSSIDRadia(byte SSID) {
-  //EEPROM.write(NAZEV_RADIA, SSID);
+void setSSIDRadia(String nazev) {
+  TextToEEPROM(SIFROVACI_KLIC, 10, nazev);
 }
 
 void setNazevZarizeni(String nazev) {
@@ -48,14 +47,6 @@ String getNazevZarizeni() {
 
 void TextToEEPROM(int adresa, int maxVelikost, String text) {
   for (int i = 0;i < text.length();i++) {
-    /*Serial.print("zapisujeme:");
-    Serial.print("pozice-");
-    Serial.print(adresa + i);
-    Serial.print("\t");
-    Serial.print("hodnota eeprom:");
-    Serial.print((byte)text[i]);
-    Serial.print("-");
-    Serial.println(text[i]);*/
     EEPROM.write(adresa + i, (byte)text[i]);
   }
   for (int i = text.length();i < maxVelikost;i++) {
@@ -66,13 +57,6 @@ void TextToEEPROM(int adresa, int maxVelikost, String text) {
 String TextFromEEPROM(int adresa, int maxVelikost) {
   String TextFromEEPROM = "";
   for (int i = 0;i < maxVelikost;i++) {
-    /*Serial.println();
-    Serial.print("adresa:");
-    Serial.print(adresa + i);
-    Serial.print("\t");
-    Serial.print("hodnota eeprom:");
-    Serial.println(EEPROM.read(adresa + i));*/
-    
     char znak = (char)EEPROM.read(adresa + i);
     if (isAlphaNumeric(znak) or znak == '-') {
       TextFromEEPROM = TextFromEEPROM + String(znak);  
